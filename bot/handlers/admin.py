@@ -274,6 +274,6 @@ async def admin_schedule(callback: CallbackQuery) -> None:
         for n in night:
             text += f"🌙 Спокойной ночи ({n['hour']:02d}:{n['minute']:02d}):\n{n['text']}\n\n"
 
-    text += "Для изменения используйте команды:\n/set_morning <текст>\n/set_night <текст>"
+    text += "Для изменения используйте команды:\n/set_morning текст\n/set_night текст"
     await callback.message.answer(text)  # type: ignore[union-attr]
     await callback.answer()
