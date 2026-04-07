@@ -1,34 +1,32 @@
-class UserProfile:
-    def __init__(self, username):
-        self.username = username
-        self.days_in_bot = 0
-        self.compliments_received = 0
-        self.created_notes = 0
-        self.other_metrics = {}
+class ProfileHandler:
+    def __init__(self, user_id):
+        self.user_id = user_id
+        self.user_data = self.get_user_data()
 
-    def update_days_in_bot(self, days):
-        self.days_in_bot += days
-
-    def add_compliment(self):
-        self.compliments_received += 1
-
-    def add_created_note(self):
-        self.created_notes += 1
-
-    def update_other_metrics(self, key, value):
-        self.other_metrics[key] = value
+    def get_user_data(self):
+        # Simulate fetching user data from the database
+        return {
+            'days_in_bot': 100,
+            'notes_created': 25,
+            'diary_entries': 50,
+            'achievements': ['Started a habit', 'Completed a project'],
+            'habits': {'exercise': 10, 'reading': 15},
+            'mood_history': ['happy', 'neutral', 'sad'],
+            'goals_stats': {'ongoing': 3, 'completed': 2}
+        }
 
     def display_profile(self):
-        profile_info = f"User: {self.username}\n" 
-        profile_info += f"Days in Bot: {self.days_in_bot}\n" 
-        profile_info += f"Compliments Received: {self.compliments_received}\n" 
-        profile_info += f"Created Notes: {self.created_notes}\n" 
-        profile_info += f"Other Metrics: {self.other_metrics}\n" 
-        return profile_info
+        # Display the user's profile statistics
+        print(f"User ID: {self.user_id}")
+        print(f"Days in Bot: {self.user_data['days_in_bot']}")
+        print(f"Notes Created: {self.user_data['notes_created']}")
+        print(f"Diary Entries: {self.user_data['diary_entries']}")
+        print(f"Achievements: {', '.join(self.user_data['achievements'])}")
+        print(f"Habits: {self.user_data['habits']}")
+        print(f"Mood History: {', '.join(self.user_data['mood_history'])}")
+        print(f"Goals Stats: {self.user_data['goals_stats']}")
 
 # Example usage
 if __name__ == '__main__':
-    user_profile = UserProfile('Ajdkckckck')
-    user_profile.update_days_in_bot(5)  # Example increment
-    user_profile.add_compliment()  # Example increment
-    print(user_profile.display_profile())
+    profile_handler = ProfileHandler(user_id='user123')
+    profile_handler.display_profile()
