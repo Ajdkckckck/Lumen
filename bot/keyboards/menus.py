@@ -6,7 +6,7 @@ from aiogram.types import (
 )
 
 
-def main_menu_kb() -> ReplyKeyboardMarkup:
+def main_menu_kb(show_admin: bool = False) -> ReplyKeyboardMarkup:
     buttons = [
         [KeyboardButton(text="💌 Комплимент"), KeyboardButton(text="🫶 Поддержка")],
         [KeyboardButton(text="📓 Дневник"), KeyboardButton(text="📬 Письма")],
@@ -17,6 +17,8 @@ def main_menu_kb() -> ReplyKeyboardMarkup:
         [KeyboardButton(text="🧠 Режим заботы"), KeyboardButton(text="📊 Статистика")],
         [KeyboardButton(text="📝 Заметки")],
     ]
+    if show_admin:
+        buttons.append([KeyboardButton(text="🛠 Админ-панель")])
     return ReplyKeyboardMarkup(keyboard=buttons, resize_keyboard=True)
 
 

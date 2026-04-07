@@ -1,4 +1,4 @@
-from aiogram import Router
+from aiogram import Router, F
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message
 
@@ -26,7 +26,7 @@ async def cmd_start(message: Message) -> None:
         "хранить твои мысли и помогать с целями ✨\n\n"
         "Выбери, что тебе нужно, из меню ниже 👇"
     )
-    await message.answer(text, reply_markup=main_menu_kb())
+    await message.answer(text, reply_markup=main_menu_kb(show_admin=(role == "admin")))
 
 
 @router.message(Command("admin"))
@@ -44,4 +44,18 @@ async def cmd_admin(message: Message) -> None:
 
 @router.message(Command("menu"))
 async def cmd_menu(message: Message) -> None:
-    await message.answer("Главное меню 💖", reply_markup=main_menu_kb())
+    user = message.from_user
+    is_adm = user is not None and user.id == ADMIN_ID
+    await message.answer("Главное меню 💖", reply_markup=main_menu_kb(show_admin=is_adm))
+
+
+@router.message(F.text == "🛠 Админ-панель")
+async def btn_admin(message: Message) -> None:
+    user = message.from_user
+    if not user or user.id != ADMIN_ID:
+        await message.answer("⛔ У тебя нет доступа к этой команде.")
+        return
+    await message.answer(
+        "🛠 Панель администратора\n\nВыбери действие:",
+        reply_markup=admin_menu_kb(),
+    )
