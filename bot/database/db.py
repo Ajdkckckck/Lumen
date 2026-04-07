@@ -758,23 +758,29 @@ def update_schedule_message(msg_id: int, text: str) -> None:
 
 
 def get_mood_stats(user_id: int, days: int = 30) -> dict[str, int]:
+    from datetime import timedelta
+
+    cutoff = (now_local() - timedelta(days=days)).strftime("%Y-%m-%d %H:%M:%S")
     conn = get_connection()
     rows = conn.execute(
         """SELECT mood, COUNT(*) as cnt FROM mood_logs
-        WHERE user_id = ? AND created_at >= date('now', ?)
+        WHERE user_id = ? AND created_at >= ?
         GROUP BY mood""",
-        (user_id, f"-{days} days"),
+        (user_id, cutoff),
     ).fetchall()
     conn.close()
     return {row["mood"]: row["cnt"] for row in rows}
 
 
 def get_habit_completion_rate(habit_id: int, days: int = 30) -> float:
+    from datetime import timedelta
+
+    cutoff = (now_local() - timedelta(days=days)).strftime("%Y-%m-%d")
     conn = get_connection()
     row = conn.execute(
         """SELECT COUNT(*) as done FROM habit_logs
-        WHERE habit_id = ? AND is_done = 1 AND date >= date('now', ?)""",
-        (habit_id, f"-{days} days"),
+        WHERE habit_id = ? AND is_done = 1 AND date >= ?""",
+        (habit_id, cutoff),
     ).fetchone()
     conn.close()
     done = row["done"] if row else 0
