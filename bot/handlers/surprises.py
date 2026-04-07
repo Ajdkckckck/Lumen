@@ -60,14 +60,14 @@ async def surprise_open(callback: CallbackQuery, state: FSMContext) -> None:
         return
 
     await state.update_data(surprise_id=surprise_id)
-    await state.set_state(SurprisesStates.waiting_password)
+    await state.set_state(SurprisesStates.waiting_surprise_password)
     await callback.message.answer(  # type: ignore[union-attr]
         "🔑 Введи пароль от этого сюрприза:", reply_markup=cancel_kb()
     )
     await callback.answer()
 
 
-@router.message(SurprisesStates.waiting_password)
+@router.message(SurprisesStates.waiting_surprise_password)
 async def surprise_unlock(message: Message, state: FSMContext) -> None:
     if not message.text:
         await message.answer("Пожалуйста, введи пароль:")
@@ -76,21 +76,8 @@ async def surprise_unlock(message: Message, state: FSMContext) -> None:
     data = await state.get_data()
     surprise_id = data.get("surprise_id")
     if not surprise_id:
-        # This is the section password check, re-route
-        pw_hash = db.get_password_hash("surprises")
-        if not pw_hash or not verify_password(message.text, pw_hash):
-            await state.clear()
-            await message.answer("❌ Неверный пароль!")
-            return
-
         await state.clear()
-        surprises = db.get_surprises()
-        if not surprises:
-            await message.answer("🎁 Пока нет сюрпризов.")
-            return
-        await message.answer(
-            "🎁 Твои сюрпризы:", reply_markup=surprises_list_kb(surprises)
-        )
+        await message.answer("❌ Ошибка: сюрприз не выбран.")
         return
 
     surprise = db.get_surprise(surprise_id)
